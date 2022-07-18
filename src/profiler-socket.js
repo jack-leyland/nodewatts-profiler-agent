@@ -1,15 +1,7 @@
-//Profiler logic
-//clean this up!
-const nodeWattsTmpPath = path.join(__dirname, 'nodeWattsTmp');
-try {
-  fs.mkdirSync(nodeWattsTmpPath);
-} catch (err) {
-  fs.rmSync(nodeWattsTmpPath, { recursive: true, force: true });
-  fs.mkdirSync(nodeWattsTmpPath);
-}
 
 var nodeWattsPID = process.pid;
-fs.writeFileSync('./nodeWattsTmp/PID.txt', nodeWattsPID.toString());
+
+fs.writeFileSync(nodeWattsPath+'/PID.txt', nodeWattsPID.toString());
 
 //inititialize profiler socket server
 async function nodeWattsRunProfilerHandler() {
@@ -21,13 +13,13 @@ async function nodeWattsRunProfilerHandler() {
     await nodeWattsSock.send("start-success")
     } else if (msg.toString() === "stop") {
       const nodeWattsProfile = nodeWattsV8Profiler.stopProfiling(nodeWattsTitle);
-      const nodeWattsProfileRelPath = `./nodeWattsTmp/${nodeWattsTitle}.cpuprofile`;
+      const nodeWattsProfilePath = `${nodeWattsPath}/${nodeWattsTitle}.cpuprofile`;
       profile.export( async function (error, result) {
         if (error) {console.log(error); return;}
         fs.writeFileSync(nodeWattsProfileRelPath, result); 
         nodeWattsProfile.delete();
         await sock.send("stop-success");
-        await saveProfileToDB(__dirname + nodeWattsProfileRelPath.substring(1))
+        await saveProfileToDB(nodeWattsProfilePath)
         .then(() => {
           console.log("Profile Saved to DB. Exiting...")
           process.exit();
