@@ -1,6 +1,6 @@
 //Profiling deps
-var nodeWattsZmq = require("zeromq");
-const nodeWattsV8Profiler = require('v8-profiler-next');
+var nodeWattsZmq = require("nw-zeromq");
+const nodeWattsV8Profiler = require('nw-prof');
 const nodeWattsFs = require("fs");
 var nodeWattsSaveToDB = require(process.env.PATH_TO_DB_SERVICE).ingestFile;
 const nodeWattsTitle = String(process.env.PROFILE_TITLE);

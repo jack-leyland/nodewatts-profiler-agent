@@ -1,6 +1,6 @@
 const port = process.env.TEST_SOCKET_PORT; // Nodewatts processs will inject these vars
 const testCmdArgs = process.env.TESTCMD.split(' ')
-var zmq = require("zeromq");
+var zmq = require("nw-zeromq");
 const { spawn } = require('child_process');
 const events = require('events');
 const { exit } = require("process");
