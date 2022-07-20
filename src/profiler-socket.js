@@ -18,7 +18,7 @@ async function nodeWattsRunProfilerHandler() {
         nodeWattsFs.writeFileSync(nodeWattsProfilePath, result); 
         nodeWattsProfile.delete();
         await nodeWattsSock.send("stop-success");
-        await nodeWattsSaveToDB(nodeWattsProfilePath)
+        await nodeWattsSaveToDB(nodeWattsProfilePath, nodeWattsTitle)
         .then(() => {
           console.log("Profile Saved to DB Successfully.")
         })
