@@ -1,8 +1,3 @@
-
-var nodeWattsPID = process.pid;
-
-nodeWattsFs.writeFileSync(nodeWattsPath+'/PID.txt', nodeWattsPID.toString());
-
 //inititialize profiler socket server
 async function nodeWattsRunProfilerHandler() {
   const nodeWattsSock = new nodeWattsZmq.Reply();
@@ -33,3 +28,5 @@ async function nodeWattsRunProfilerHandler() {
   }
 }
 nodeWattsRunProfilerHandler();
+var nodeWattsPID = process.pid;
+nodeWattsFs.writeFileSync(nodeWattsPath+'/PID.txt', nodeWattsPID.toString());
