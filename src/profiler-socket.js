@@ -1,3 +1,5 @@
+const { exit } = require("process");
+
 async function nodeWattsRunProfilerHandler() {
   const nodeWattsSock = new nodeWattsZmq.Reply();
   await nodeWattsSock.bind("tcp://127.0.0.1:" + nodeWattsPort);
@@ -18,10 +20,11 @@ async function nodeWattsRunProfilerHandler() {
         await nodeWattsSock.send("stop-success");
         await nodeWattsSaveToDB(nodeWattsProfilePath)
         .then(() => {
-          console.log("Profile Saved to DB.")
+          console.log("Profile Saved to DB Successfully.")
         })
         .catch((err) => {
           console.error("NodeWatts DB Save Error: " + err )
+          exit(9)
         });
       }
     )} else if (msg.toString() === 'stop-discard'){
