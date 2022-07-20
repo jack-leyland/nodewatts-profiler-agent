@@ -27,7 +27,7 @@ async function testRunner() {
     testingProc.stdout.on('data', (data) => {
       console.log(data)
     })
-    testingProc.on('close', (exitCode) => {
+    testingProc.on('close', async function(exitCode) {
       if (parseInt(exitCode) !== 0) {
           console.error("Nodewatts Test Runner Error: Testing child process exited with return code " + String(exitCode))
           console.error("Telling server to discard profile.")
