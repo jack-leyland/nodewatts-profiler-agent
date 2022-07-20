@@ -22,10 +22,10 @@ async function testRunner() {
     testingProc = spawn(cmd, args);
     // Parrot child output stream up to parent so python script can use for debugging output
     testingProc.stderr.on('data',(data)=>{
-      console.error(data)
+      console.error(data.toString('utf8'))
     })
     testingProc.stdout.on('data', (data) => {
-      console.log(data)
+      console.log(data.toString('utf8'))
     })
     testingProc.on('close', async function(exitCode) {
       if (parseInt(exitCode) !== 0) {
