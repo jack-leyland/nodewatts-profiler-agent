@@ -8,7 +8,7 @@ async function nodeWattsRunProfilerHandler() {
     } else if (msg.toString() === "stop") {
       const nodeWattsProfile = nodeWattsV8Profiler.stopProfiling(nodeWattsTitle);
       const nodeWattsProfilePath = `${nodeWattsPath}/${nodeWattsTitle}.cpuprofile`;
-      profile.export( async function (error, result) {
+      nodeWattsProfile.export( async function (error, result) {
         if (error) {
           console.error("NodeWatts CPU Profile Export Error: " + error);
           process.exit(1)
