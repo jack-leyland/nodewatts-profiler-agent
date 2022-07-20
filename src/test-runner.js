@@ -14,11 +14,11 @@ var args = testCmd
 async function testRunner() {
   const sock = new zmq.Request();
   sock.connect("tcp://127.0.0.1:" + String(port));
-  console.log("Test runner started.")
+  console.log("Runner: Test runner started.")
   await sock.send("start");
   const [res] = await sock.receive();
   if (res.toString() === "start-success") {
-    console.log("Test Runner received successful start msg from server. Running test suite")
+    console.log("Runner: Test Runner received successful start msg from server. Running test suite")
     testingProc = spawn(cmd, args);
     // Parrot child output stream up to parent so python script can use for debugging output
     testingProc.stderr.on('data',(data)=>{
@@ -29,19 +29,19 @@ async function testRunner() {
     })
     testingProc.on('close', async function(exitCode) {
       if (parseInt(exitCode) !== 0) {
-          console.error("Nodewatts Test Runner Error: Testing child process exited with return code " + String(exitCode))
-          console.error("Telling server to discard profile.")
+          console.error("Runner: Testing child process exited with return code " + String(exitCode))
+          console.error("Runner: Telling server to discard profile.")
           await sock.send('stop-discard')
           exit(1)
       }
       emitter.emit('tests-success');
     });
     emitter.on('tests-success', async function() {
-      console.log("Tests completed Successfully. Sending stop message to server")
+      console.log("Runner: Tests completed Successfully. Sending stop message to server")
       await sock.send("stop-save")
       const [res] = await sock.receive();
       if (res.toString() === "stop-success") {
-        console.log("Received stop success message from server. Exiting")
+        console.log("Runner: Received stop success message from server. Exiting")
         exit(0)
       };
     })
