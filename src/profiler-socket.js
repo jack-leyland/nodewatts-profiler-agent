@@ -5,7 +5,7 @@ async function nodeWattsRunProfilerHandler() {
     if (msg.toString() === "start") {
     nodeWattsV8Profiler.startProfiling(nodeWattsTitle, true);
     await nodeWattsSock.send("start-success")
-    } else if (msg.toString() === "stop") {
+    } else if (msg.toString() === "stop-save") {
       const nodeWattsProfile = nodeWattsV8Profiler.stopProfiling(nodeWattsTitle);
       const nodeWattsProfilePath = `${nodeWattsPath}/${nodeWattsTitle}.cpuprofile`;
       nodeWattsProfile.export( async function (error, result) {
@@ -22,10 +22,11 @@ async function nodeWattsRunProfilerHandler() {
         })
         .catch((err) => {
           console.error("NodeWatts DB Save Error: " + err )
-          process.exit(1);
         });
       }
-    )}
+    )} else if (msg.toString() === 'stop-discard'){
+        nodeWattsV8Profiler.stopProfiling(nodeWattsTitle)
+    }
   }
 }
 nodeWattsRunProfilerHandler();

@@ -19,16 +19,26 @@ async function testRunner() {
   const [res] = await sock.receive();
   if (res.toString() === "start-success") {
     console.log("Test Runner received successful start msg from server. Running test suite")
-    testProc = spawn(cmd, args);
-    testProc.on('exit', (exitCode) => {
+    testingProc = spawn(cmd, args);
+    // Parrot child output stream up to parent so python script can use for debugging output
+    testingProc.stderr.on('data',(data)=>{
+      console.error(data)
+    })
+    testingProc.stdout.on('data', (data) => {
+      console.log(data)
+    })
+    testingProc.on('close', (exitCode) => {
       if (parseInt(exitCode) !== 0) {
-          console.error("Nodewatts Test Runner: Exited with return code " + String(exitCode))
+          console.error("Nodewatts Test Runner Error: Testing child process exited with return code " + String(exitCode))
+          console.error("Telling server to discard profile.")
+          await sock.send('stop-discard')
+          exit(1)
       }
-      emitter.emit('testExit');
+      emitter.emit('tests-success');
     });
-    emitter.on('testExit', async function() {
-      console.log("Tests completed. Sending stop message to server")
-      await sock.send("stop")
+    emitter.on('tests-success', async function() {
+      console.log("Tests completed Successfully. Sending stop message to server")
+      await sock.send("stop-save")
       const [res] = await sock.receive();
       if (res.toString() === "stop-success") {
         console.log("Received stop success message from server. Exiting")
