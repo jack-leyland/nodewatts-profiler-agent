@@ -20,7 +20,7 @@ async function testRunner() {
     testProc = spawn(cmd, args);
     testProc.on('exit', (exitCode) => {
       if (parseInt(exitCode) !== 0) {
-          console.log(exitCode)
+          console.error("Nodewatts Test Runner: Exited with return code " + String(exitCode))
       }
       emitter.emit('testExit');
     });
