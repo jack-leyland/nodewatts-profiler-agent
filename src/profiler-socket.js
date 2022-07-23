@@ -11,7 +11,7 @@ async function nodeWattsRunProfilerHandler() {
       nodeWattsProfile.export( async function (error, result) {
         if (error) {
           console.error("NodeWatts CPU Profile Export Error: " + error);
-          process.exit(1)
+          process.exit(9)
           }
         nodeWattsFs.writeFileSync(nodeWattsProfilePath, result); 
         nodeWattsProfile.delete();
